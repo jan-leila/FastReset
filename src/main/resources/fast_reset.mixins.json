@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "fast_reset.client.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "GameMenuMixin",
+    "ResetMixin",
+    "ServerChunkManagerMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

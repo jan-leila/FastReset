@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "fast_reset",
+  "version": "${version}",
+  "name": "FastReset",
+  "description": "",
+  "authors": [
+    "closet_witch"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "fast_reset.client.client.Client"
+    ],
+    "main": [
+      "fast_reset.client.Client"
+    ]
+  },
+  "mixins": [
+    "fast_reset.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.1.0",
+    "minecraft": "1.16.1"
+  }
+}
