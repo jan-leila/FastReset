@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Client implements ModInitializer {
     public static boolean saveOnQuit;
+    public static int buttonPos;
 
     public static Logger LOGGER = LogManager.getLogger();
 
@@ -17,6 +18,7 @@ public class Client implements ModInitializer {
     @Override
     public void onInitialize() {
         saveOnQuit = true;
+        buttonPos = 1;
         log(Level.INFO, "Using Fast Reset");
     }
 
