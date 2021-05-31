@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.apache.logging.log4j.Level;
 
 @Mixin(GameMenuScreen.class)
 public class GameMenuMixin extends Screen {
@@ -36,14 +37,17 @@ public class GameMenuMixin extends Screen {
     private void createSaveButton(CallbackInfo ci){
         int height = 20;
 
-        // bottom left build
-//        int width = 102;
-//        int x = this.width - width - 4;
-//        int y = this.height - height - 4;
-        // center build
-        int width = 204;
-        int x = this.width / 2 - width/2;
-        int y = this.height / 4 + 148 - height;
+        if(Client.buttonPos == 0){
+            // bottom left build
+            int width = 102;
+            int x = this.width - width - 4;
+            int y = this.height - height - 4;
+        } else if(Client.buttonPos == 1){
+            // center build
+            int width = 204;
+            int x = this.width / 2 - width/2;
+            int y = this.height / 4 + 148 - height;
+        }
 
         this.addButton(new ButtonWidget(x, y, width, height, new TranslatableText("menu.quitWorld"), (buttonWidgetx) -> {
             Client.saveOnQuit = false;
@@ -52,6 +56,9 @@ public class GameMenuMixin extends Screen {
             boolean bl2 = this.client.isConnectedToRealms();
             buttonWidgetx.active = false;
             this.client.world.disconnect();
+            
+            Client.log(Level.INFO,"Fast quitting world");
+            
             if (bl) {
                 this.client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
             } else {
