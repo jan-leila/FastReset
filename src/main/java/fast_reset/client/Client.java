@@ -2,6 +2,10 @@ package fast_reset.client;
 
 import net.fabricmc.api.ModInitializer;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Client implements ModInitializer {
     public static boolean saveOnQuit;
 
