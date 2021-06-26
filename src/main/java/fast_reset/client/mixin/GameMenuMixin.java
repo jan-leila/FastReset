@@ -10,12 +10,12 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.apache.logging.log4j.Level;
 
 @Mixin(GameMenuScreen.class)
 public class GameMenuMixin extends Screen {
@@ -25,8 +25,9 @@ public class GameMenuMixin extends Screen {
     }
 
     // kill save on the shutdown
-    @Redirect(method = "initWidgets", at = @At(value = "NEW", target = "net/minecraft/client/gui/widget/ButtonWidget", ordinal=7))
-    private ButtonWidget createExitButton(int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress){
+    @Redirect(method = "initWidgets", at = @At(value = "NEW", target = "net/minecraft/client/gui/widget/ButtonWidget", ordinal = 7))
+    private ButtonWidget createExitButton(int x, int y, int width, int height, String message,
+        ButtonWidget.PressAction onPress) {
         return new ButtonWidget(x, y, width, height, message, (b) -> {
             Client.saveOnQuit = true;
             onPress.onPress(b);
@@ -34,44 +35,48 @@ public class GameMenuMixin extends Screen {
     }
 
     @Inject(method = "initWidgets", at=@At(value ="TAIL"))
-    private void createSaveButton(CallbackInfo ci){
+    private void createSaveButton(CallbackInfo ci) {
         int height = 20;
 
-        if(Client.buttonPos == 0){
+        int width, x, y;
+
+        if (Client.buttonPos == 0) {
             // bottom left build
-            int width = 102;
-            int x = this.width - width - 4;
-            int y = this.height - height - 4;
-        } else if(Client.buttonPos == 1){
+            width = 102;
+            x = this.width - width - 4;
+            y = this.height - height - 4;
+        } else if (Client.buttonPos == 1) {
             // center build
-            int width = 204;
-            int x = this.width / 2 - width/2;
-            int y = this.height / 4 + 148 - height;
+            width = 204;
+            x = this.width / 2 - width / 2;
+            y = this.height / 4 + 148 - height;
+        } else {
+            throw new IllegalStateException("invalid button pos " + Client.buttonPos);
         }
 
-        this.addButton(new ButtonWidget(x, y, width, height, new TranslatableText("menu.quitWorld"), (buttonWidgetx) -> {
+        this.addButton(new ButtonWidget(x, y, width, height, "Quit World", (buttonWidgetx) -> {
             Client.saveOnQuit = false;
 
-            boolean bl = this.client.isInSingleplayer();
-            boolean bl2 = this.client.isConnectedToRealms();
+            boolean bl = this.minecraft.isInSingleplayer();
+            boolean bl2 = this.minecraft.isConnectedToRealms();
             buttonWidgetx.active = false;
-            this.client.world.disconnect();
-            
-            Client.log(Level.INFO,"Fast quitting world");
-            
+            this.minecraft.world.disconnect();
+
+            Client.log(Level.INFO, "Fast quitting world");
+
             if (bl) {
-                this.client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
+                this.minecraft.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
             } else {
-                this.client.disconnect();
+                this.minecraft.disconnect();
             }
 
             if (bl) {
-                this.client.openScreen(new TitleScreen());
+                this.minecraft.openScreen(new TitleScreen());
             } else if (bl2) {
                 RealmsBridge realmsBridge = new RealmsBridge();
                 realmsBridge.switchToRealms(new TitleScreen());
             } else {
-                this.client.openScreen(new MultiplayerScreen(new TitleScreen()));
+                this.minecraft.openScreen(new MultiplayerScreen(new TitleScreen()));
             }
         }));
     }
