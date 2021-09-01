@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.realms.RealmsBridge;
+import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
@@ -67,7 +67,7 @@ public class GameMenuMixin extends Screen {
         }
 
 
-        this.addButton(new ButtonWidget(x, y, width, height, new TranslatableText("menu.quitWorld"), (buttonWidgetX) -> {
+        this.addDrawableChild(new ButtonWidget(x, y, width, height, new TranslatableText("menu.quitWorld"), (buttonWidgetX) -> {
             Client.saveOnQuit = false;
 
             boolean bl = this.client.isInSingleplayer();
@@ -80,13 +80,14 @@ public class GameMenuMixin extends Screen {
                 this.client.disconnect();
             }
 
+
+            TitleScreen titleScreen = new TitleScreen();
             if (bl) {
-                this.client.openScreen(new TitleScreen());
+                this.client.setScreen(titleScreen);
             } else if (bl2) {
-                RealmsBridge realmsBridge = new RealmsBridge();
-                realmsBridge.switchToRealms(new TitleScreen());
+                this.client.setScreen(new RealmsMainScreen(titleScreen));
             } else {
-                this.client.openScreen(new MultiplayerScreen(new TitleScreen()));
+                this.client.setScreen(new MultiplayerScreen(titleScreen));
             }
         }));
     }
