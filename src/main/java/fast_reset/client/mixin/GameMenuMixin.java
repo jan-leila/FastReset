@@ -23,9 +23,15 @@ public class GameMenuMixin extends Screen {
         super(title);
     }
 
+    private static final int bottomRightWidth = 102;
+
     // kill save on the shutdown
     @Redirect(method = "initWidgets", at = @At(value = "NEW", target = "net/minecraft/client/gui/widget/ButtonWidget", ordinal=7))
-    private ButtonWidget createExitButton(int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress){
+    private ButtonWidget createExitButton(int defaultX, int defaultY, int defaultWidth, int height, Text message, ButtonWidget.PressAction onPress){
+        int x = Client.buttonLocation == 2 ? (int) (this.width - (bottomRightWidth * 1.5) - 4) : defaultX;
+        int y = Client.buttonLocation == 2 ? this.height - 24 : defaultY;
+        int width = Client.buttonLocation == 2 ? (int) (bottomRightWidth * 1.5) : defaultWidth;
+
         return new ButtonWidget(x, y, width, height, message, (b) -> {
             Client.saveOnQuit = true;
             onPress.onPress(b);
@@ -36,21 +42,37 @@ public class GameMenuMixin extends Screen {
     private void createSaveButton(CallbackInfo ci){
         int height = 20;
 
-        // bottom left build
-//        int width = 102;
-//        int x = this.width - width - 4;
-//        int y = this.height - height - 4;
-        // center build
-        int width = 204;
-        int x = this.width / 2 - width/2;
-        int y = this.height / 4 + 148 - height;
+        int width;
+        int x;
+        int y;
+        switch(Client.buttonLocation){
+            // bottom right build
+            case 0:
+                width = 102;
+                x = this.width - width - 4;
+                y = this.height - height - 4;
+                break;
+            // center build
+            case 1:
+                width = 204;
+                x = this.width / 2 - width/2;
+                y = this.height / 4 + 148 - height;
+                break;
+            case 2:
+            default:
+                width = 204;
+                x = this.width / 2 - width/2;
+                y = this.height / 4 + 124 - height;
+                break;
+        }
 
-        this.addButton(new ButtonWidget(x, y, width, height, new TranslatableText("menu.quitWorld"), (buttonWidgetx) -> {
+
+        this.addButton(new ButtonWidget(x, y, width, height, new TranslatableText("menu.quitWorld"), (buttonWidgetX) -> {
             Client.saveOnQuit = false;
 
             boolean bl = this.client.isInSingleplayer();
             boolean bl2 = this.client.isConnectedToRealms();
-            buttonWidgetx.active = false;
+            buttonWidgetX.active = false;
             this.client.world.disconnect();
             if (bl) {
                 this.client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));

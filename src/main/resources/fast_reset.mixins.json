@@ -6,6 +6,7 @@
   "mixins": [
     "ClientMixin",
     "GameMenuMixin",
+    "OptionsScreenMixin",
     "ResetMixin",
     "ServerChunkManagerMixin"
   ],
