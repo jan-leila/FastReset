@@ -4,6 +4,7 @@
   "package": "fast_reset.client.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ClientMixin",
     "GameMenuMixin",
     "ResetMixin",
     "ServerChunkManagerMixin"
