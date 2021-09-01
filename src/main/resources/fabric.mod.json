@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "fast_reset",
-  "version": "1.4.0",
-  "name": "FastReset",
+  "version": "1.0.0",
+  "name": "FastReset_1.15.2",
   "description": "",
   "authors": [
     "closet_witch"
@@ -23,6 +23,6 @@
   ],
   "depends": {
     "fabricloader": ">=0.1.0",
-    "minecraft": "1.16.1"
+    "minecraft": "1.15.2"
   }
 }

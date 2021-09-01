@@ -27,7 +27,7 @@ public class GameMenuMixin extends Screen {
 
     // kill save on the shutdown
     @Redirect(method = "initWidgets", at = @At(value = "NEW", target = "net/minecraft/client/gui/widget/ButtonWidget", ordinal=7))
-    private ButtonWidget createExitButton(int defaultX, int defaultY, int defaultWidth, int height, Text message, ButtonWidget.PressAction onPress){
+    private ButtonWidget createExitButton(int defaultX, int defaultY, int defaultWidth, int height, String message, ButtonWidget.PressAction onPress){
         int x = Client.buttonLocation == 2 ? (int) (this.width - (bottomRightWidth * 1.5) - 4) : defaultX;
         int y = Client.buttonLocation == 2 ? this.height - 24 : defaultY;
         int width = Client.buttonLocation == 2 ? (int) (bottomRightWidth * 1.5) : defaultWidth;
@@ -67,26 +67,26 @@ public class GameMenuMixin extends Screen {
         }
 
 
-        this.addButton(new ButtonWidget(x, y, width, height, new TranslatableText("menu.quitWorld"), (buttonWidgetX) -> {
+        this.addButton(new ButtonWidget(x, y, width, height, new TranslatableText("menu.quitWorld").getString(), (buttonWidgetX) -> {
             Client.saveOnQuit = false;
 
-            boolean bl = this.client.isInSingleplayer();
-            boolean bl2 = this.client.isConnectedToRealms();
+            boolean bl = this.minecraft.isInSingleplayer();
+            boolean bl2 = this.minecraft.isConnectedToRealms();
             buttonWidgetX.active = false;
-            this.client.world.disconnect();
+            this.minecraft.world.disconnect();
             if (bl) {
-                this.client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
+                this.minecraft.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
             } else {
-                this.client.disconnect();
+                this.minecraft.disconnect();
             }
 
             if (bl) {
-                this.client.openScreen(new TitleScreen());
+                this.minecraft.openScreen(new TitleScreen());
             } else if (bl2) {
                 RealmsBridge realmsBridge = new RealmsBridge();
                 realmsBridge.switchToRealms(new TitleScreen());
             } else {
-                this.client.openScreen(new MultiplayerScreen(new TitleScreen()));
+                this.minecraft.openScreen(new MultiplayerScreen(new TitleScreen()));
             }
         }));
     }
