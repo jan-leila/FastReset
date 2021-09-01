@@ -11,11 +11,11 @@ public class SaveWorldScreen extends Screen {
         super(new TranslatableText("menu.savingLevel"));
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta){
-        renderBackground(matrices);
+    public void render(int mouseX, int mouseY, float delta){
+        this.renderBackground();
 
-        super.render(matrices, mouseX, mouseY, delta);
+        this.drawCenteredString(this.font, new TranslatableText("still saving the last world").asString(), this.width / 2, 70, Color.white.getRGB());
 
-        this.drawCenteredText(matrices, this.textRenderer, new TranslatableText("still saving the last world"), this.width / 2, 70, Color.white.getRGB());
+        super.render(mouseX, mouseY, delta);
     }
 }

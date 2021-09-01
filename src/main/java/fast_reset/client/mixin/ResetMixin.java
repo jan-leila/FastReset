@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 @Mixin(MinecraftServer.class)
 public class ResetMixin {
-    @Shadow @Final protected LevelStorage.Session session;
+//    @Shadow @Final protected LevelStorage.Session session;
 
     // kill save on the shutdown
     @Redirect(method = "shutdown", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0))
@@ -48,11 +48,12 @@ public class ResetMixin {
                         }
                     }
                 }
-                try {
-                    this.session.deleteSessionLock();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // TODO: check to see if we need session lock things for 1.15.2
+//                try {
+//                    this.session.deleteSessionLock();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
             }
         }).start();
         return false;
