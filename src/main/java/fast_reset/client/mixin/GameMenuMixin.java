@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.realms.RealmsBridge;
+import net.minecraft.client.realms.gui.screen.RealmsBridgeScreen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
@@ -80,8 +80,8 @@ public class GameMenuMixin extends Screen {
             if (bl) {
                 this.client.openScreen(new TitleScreen());
             } else if (bl2) {
-                RealmsBridge realmsBridge = new RealmsBridge();
-                realmsBridge.switchToRealms(new TitleScreen());
+                RealmsBridgeScreen realmsBridgeScreen = new RealmsBridgeScreen();
+                realmsBridgeScreen.switchToRealms(new TitleScreen());
             } else {
                 this.client.openScreen(new MultiplayerScreen(new TitleScreen()));
             }

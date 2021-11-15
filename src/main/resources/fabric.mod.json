@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fast_reset",
-  "version": "1.4.1",
+  "version": "1.0.0",
   "name": "FastReset",
   "description": "",
   "authors": [
@@ -23,6 +23,6 @@
   ],
   "depends": {
     "fabricloader": ">=0.1.0",
-    "minecraft": "1.16.1"
+    "minecraft": "1.16.5"
   }
 }
