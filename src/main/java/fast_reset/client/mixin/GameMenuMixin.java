@@ -32,10 +32,7 @@ public class GameMenuMixin extends Screen {
         int y = Client.buttonLocation == 2 ? this.height - 24 : defaultY;
         int width = Client.buttonLocation == 2 ? (int) (bottomRightWidth * 1.5) : defaultWidth;
 
-        return new ButtonWidget(x, y, width, height, message, (b) -> {
-            Client.saveOnQuit = true;
-            onPress.onPress(b);
-        });
+        return new ButtonWidget(x, y, width, height, message, onPress);
     }
 
     @Inject(method = "initWidgets", at=@At(value ="TAIL"))
@@ -89,6 +86,7 @@ public class GameMenuMixin extends Screen {
             } else {
                 this.client.setScreen(new MultiplayerScreen(titleScreen));
             }
+            Client.saveOnQuit = true;
         }));
     }
 }
