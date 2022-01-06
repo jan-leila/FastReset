@@ -26,8 +26,10 @@ public class OptionsScreenMixin extends Screen {
             case 1:
                 return new LiteralText("center");
             case 2:
-            default:
                 return new LiteralText("replace s&q");
+            case 3:
+            default:
+                return new LiteralText("s&q bottom left");
         }
     }
 

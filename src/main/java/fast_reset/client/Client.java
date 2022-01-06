@@ -17,7 +17,7 @@ public class Client implements ModInitializer {
 
     public static void updateButtonLocation(){
         buttonLocation++;
-        if(buttonLocation > 2){
+        if(buttonLocation > 3){
             buttonLocation = 0;
         }
 

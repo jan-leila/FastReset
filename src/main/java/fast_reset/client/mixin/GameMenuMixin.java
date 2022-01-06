@@ -28,9 +28,9 @@ public class GameMenuMixin extends Screen {
     // kill save on the shutdown
     @Redirect(method = "initWidgets", at = @At(value = "NEW", target = "net/minecraft/client/gui/widget/ButtonWidget", ordinal=7))
     private ButtonWidget createExitButton(int defaultX, int defaultY, int defaultWidth, int height, Text message, ButtonWidget.PressAction onPress){
-        int x = Client.buttonLocation == 2 ? (int) (this.width - (bottomRightWidth * 1.5) - 4) : defaultX;
-        int y = Client.buttonLocation == 2 ? this.height - 24 : defaultY;
-        int width = Client.buttonLocation == 2 ? (int) (bottomRightWidth * 1.5) : defaultWidth;
+        int x = Client.buttonLocation == 3 ? 4 : Client.buttonLocation == 2 ? (int) (this.width - (bottomRightWidth * 1.5) - 4) : defaultX;
+        int y = (Client.buttonLocation == 3 || Client.buttonLocation == 2) ? this.height - 24 : defaultY;
+        int width = (Client.buttonLocation == 3 || Client.buttonLocation == 2) ? (int) (bottomRightWidth * 1.5) : defaultWidth;
 
         return new ButtonWidget(x, y, width, height, message, onPress);
     }
@@ -56,10 +56,15 @@ public class GameMenuMixin extends Screen {
                 y = this.height / 4 + 148 - height;
                 break;
             case 2:
-            default:
                 width = 204;
                 x = this.width / 2 - width/2;
                 y = this.height / 4 + 124 - height;
+                break;
+            case 3:
+            default:
+                width = 102;
+                x = this.width - width - 4;
+                y = this.height - height - 4;
                 break;
         }
 
