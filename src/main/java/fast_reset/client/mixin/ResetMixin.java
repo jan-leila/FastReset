@@ -1,6 +1,6 @@
 package fast_reset.client.mixin;
 
-import fast_reset.client.Client;
+import fast_reset.client.FastReset;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.world.ServerWorld;
@@ -9,9 +9,12 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.io.IOException;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 @Mixin(MinecraftServer.class)
@@ -19,39 +22,31 @@ public class ResetMixin {
     @Shadow @Final protected LevelStorage.Session session;
 
     // kill save on the shutdown
-    @Redirect(method = "shutdown", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0))
-    private boolean getWorldsInjectOne(Iterator<ServerWorld> iterator){
-        if(Client.saveOnQuit){
-            return iterator.hasNext();
-        }
-        while(iterator.hasNext()){
-            iterator.next().savingDisabled = true;
-        }
-        return false;
+    @ModifyConstant(method = "shutdown", constant = @Constant(intValue = 0, ordinal = 0))
+    private int disableWorldSaving(int savingDisabled) {
+        return FastReset.saveOnQuit ? savingDisabled : 1;
     }
 
     @Redirect(method = "shutdown", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 1))
-    private boolean getWorldsInjectTwo(Iterator<ServerWorld> iterator){
-        if(Client.saveOnQuit){
+    private boolean closeWorldsRedirect(Iterator<ServerWorld> iterator) {
+        if (FastReset.saveOnQuit) {
             return iterator.hasNext();
         }
 
         new Thread(() -> {
-            synchronized(Client.saveLock){
-                while(iterator.hasNext()){
+            synchronized(FastReset.saveLock) {
+                while(iterator.hasNext()) {
                     ServerWorld world = iterator.next();
                     if (world != null) {
                         try {
                             world.close();
-                        } catch (IOException ignored) {
-
+                        } catch (ConcurrentModificationException | IOException ignored) {
                         }
                     }
                 }
                 try {
                     this.session.deleteSessionLock();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IllegalStateException | IOException ignored) {
                 }
             }
         }).start();
@@ -59,18 +54,9 @@ public class ResetMixin {
     }
 
     @Redirect(method = "shutdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;saveAllPlayerData()V"))
-    private void shutdownPlayerSaveInject(PlayerManager playerManager){
-        if(Client.saveOnQuit){
+    private void disablePlayerSaving(PlayerManager playerManager) {
+        if (FastReset.saveOnQuit) {
             playerManager.saveAllPlayerData();
         }
     }
-
-    // kill all things auto save things
-//    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;save(ZZZ)Z"))
-//    private boolean autoSaveInject(MinecraftServer server, boolean a, boolean b, boolean c){
-//        return false;
-//    }
-//
-//    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;saveAllPlayerData()V"))
-//    private void shutdownPlayerDataSaveInject(PlayerManager server){}
 }
