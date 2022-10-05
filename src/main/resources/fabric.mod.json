@@ -11,6 +11,9 @@
   "license": "MIT",
   "environment": "client",
   "entrypoints": {
+    "preLaunch": [
+      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
+    ],
     "client": [
       "fast_reset.client.FastReset"
     ]
@@ -19,7 +22,6 @@
     "fast_reset.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.1.0",
-    "minecraft": ">=1.16 <=1.16.1
+    "fabricloader": ">=0.1.0"
   }
 }

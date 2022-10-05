@@ -16,6 +16,11 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+    // Mixin Extras
+    modImplementation include("com.github.LlamaLad7:MixinExtras:${project.mixinextras_version}")
+    implementation("com.github.LlamaLad7:MixinExtras:${project.mixinextras_version}")
+    annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixinextras_version}")
+
     // Fabric API. This is technically optional, but you probably want it anyway.
 //    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
@@ -45,6 +50,10 @@ tasks.withType(JavaCompile) {
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = "sources"
     from sourceSets.main.allSource
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
 }
 
 jar {

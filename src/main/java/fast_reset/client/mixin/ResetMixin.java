@@ -1,5 +1,6 @@
 package fast_reset.client.mixin;
 
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import fast_reset.client.FastReset;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -53,10 +54,8 @@ public class ResetMixin {
         return false;
     }
 
-    @Redirect(method = "shutdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;saveAllPlayerData()V"))
-    private void disablePlayerSaving(PlayerManager playerManager) {
-        if (FastReset.saveOnQuit) {
-            playerManager.saveAllPlayerData();
-        }
+    @WrapWithCondition(method = "shutdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;saveAllPlayerData()V"))
+    private boolean disablePlayerSaving(PlayerManager playerManager) {
+        return FastReset.saveOnQuit;
     }
 }
