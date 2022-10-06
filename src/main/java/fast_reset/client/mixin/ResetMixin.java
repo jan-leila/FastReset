@@ -1,6 +1,5 @@
 package fast_reset.client.mixin;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import fast_reset.client.FastReset;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -36,6 +35,10 @@ public class ResetMixin {
 
         new Thread(() -> {
             synchronized(FastReset.saveLock) {
+                synchronized (FastReset.saving) {
+                    FastReset.saving = true;
+                }
+
                 while(iterator.hasNext()) {
                     ServerWorld world = iterator.next();
                     if (world != null) {
@@ -49,13 +52,19 @@ public class ResetMixin {
                     this.session.deleteSessionLock();
                 } catch (IllegalStateException | IOException ignored) {
                 }
+
+                synchronized (FastReset.saving) {
+                    FastReset.saving = false;
+                }
             }
         }).start();
         return false;
     }
 
-    @WrapWithCondition(method = "shutdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;saveAllPlayerData()V"))
-    private boolean disablePlayerSaving(PlayerManager playerManager) {
-        return FastReset.saveOnQuit;
+    @Redirect(method = "shutdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;saveAllPlayerData()V"))
+    private void disablePlayerSaving(PlayerManager playerManager) {
+        if (FastReset.saveOnQuit) {
+            playerManager.saveAllPlayerData();
+        }
     }
 }

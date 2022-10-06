@@ -4,8 +4,8 @@
   "package": "fast_reset.client.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "CreateWorldScreenMixin",
     "GameMenuMixin",
+    "MinecraftClientMixin",
     "OptionsScreenMixin",
     "ResetMixin",
     "ServerChunkManagerMixin"
