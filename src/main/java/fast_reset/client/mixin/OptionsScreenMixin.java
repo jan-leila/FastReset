@@ -18,23 +18,27 @@ public class OptionsScreenMixin extends Screen {
         super(title);
     }
 
-    private static String getButtonText() {
+    private static Text getButtonText() {
+        String text;
         switch (FastReset.buttonLocation) {
             case 0:
-                return "bottom right";
+                text = "bottom right";
+                break;
             case 1:
-                return "center";
+                text = "center";
+                break;
             case 2:
             default:
-                return "replace s&q";
+                text = "replace s&q";
         }
+        return new LiteralText(text);
     }
 
     @Inject(method = "init", at=@At("TAIL"))
     public void initInject(CallbackInfo ci) {
-        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height / 6 + 142 - 4, 150, 20, new LiteralText(getButtonText()), (buttonWidget) -> {
+        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height / 6 + 142 - 4, 150, 20, getButtonText(), (buttonWidget) -> {
             FastReset.updateButtonLocation();
-            buttonWidget.setMessage(new LiteralText(getButtonText()));
+            buttonWidget.setMessage(getButtonText());
         }));
     }
 }
