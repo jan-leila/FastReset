@@ -47,10 +47,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 jar {
     from "LICENSE"
 }
