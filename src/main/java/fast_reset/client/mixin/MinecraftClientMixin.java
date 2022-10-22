@@ -4,7 +4,7 @@ import fast_reset.client.FastReset;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.SaveLevelScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.LiteralText;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +25,7 @@ public abstract class MinecraftClientMixin {
             }
         }
 
-        this.method_29970(new SaveLevelScreen(new TranslatableText("still saving the last world")));
+        this.method_29970(new SaveLevelScreen(new LiteralText("still saving the last world")));
 
         synchronized(FastReset.saveLock) {
             FastReset.LOGGER.info("done waiting for save lock");
