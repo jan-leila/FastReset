@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fast_reset",
-  "version": "1.4.1",
+  "version": "${version}",
   "name": "FastReset_1.16.1",
   "description": "",
   "authors": [
@@ -12,10 +12,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "fast_reset.client.client.Client"
-    ],
-    "main": [
-      "fast_reset.client.Client"
+      "fast_reset.client.FastReset"
     ]
   },
   "mixins": [
@@ -23,6 +20,6 @@
   ],
   "depends": {
     "fabricloader": ">=0.1.0",
-    "minecraft": "1.16.1"
+    "minecraft": ">=1.16 <=1.16.1"
   }
 }
