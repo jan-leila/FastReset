@@ -18,7 +18,7 @@ public class FastReset implements ClientModInitializer {
     private static final File configurationFile = FabricLoader.getInstance().getConfigDir().resolve("fastReset").resolve("settings.txt").toFile();
 
     public static boolean saveOnQuit = true;
-    public static AtomicBoolean saving = new AtomicBoolean();
+    public static final AtomicBoolean saving = new AtomicBoolean();
     public static final Object saveLock = new Object();
 
     public static int buttonLocation = 0;
