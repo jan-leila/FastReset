@@ -5,8 +5,12 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FastReset implements ClientModInitializer {
 
@@ -14,7 +18,7 @@ public class FastReset implements ClientModInitializer {
     private static final File configurationFile = FabricLoader.getInstance().getConfigDir().resolve("fastReset").resolve("settings.txt").toFile();
 
     public static boolean saveOnQuit = true;
-    public static Boolean saving = false;
+    public static AtomicBoolean saving = new AtomicBoolean();
     public static final Object saveLock = new Object();
 
     public static int buttonLocation = 0;

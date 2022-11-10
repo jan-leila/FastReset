@@ -13,8 +13,6 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.io.IOException;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 @Mixin(MinecraftServer.class)
@@ -35,27 +33,23 @@ public class ResetMixin {
 
         new Thread(() -> {
             synchronized(FastReset.saveLock) {
-                synchronized (FastReset.saving) {
-                    FastReset.saving = true;
-                }
+                FastReset.saving.set(true);
 
                 while(iterator.hasNext()) {
                     ServerWorld world = iterator.next();
                     if (world != null) {
                         try {
                             world.close();
-                        } catch (ConcurrentModificationException | IOException ignored) {
+                        } catch (Exception ignored) {
                         }
                     }
                 }
                 try {
                     this.session.deleteSessionLock();
-                } catch (IllegalStateException | IOException ignored) {
+                } catch (Exception ignored) {
                 }
 
-                synchronized (FastReset.saving) {
-                    FastReset.saving = false;
-                }
+                FastReset.saving.set(false);
             }
         }).start();
         return false;

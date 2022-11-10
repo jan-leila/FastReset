@@ -18,11 +18,9 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;startServer(Ljava/util/function/Function;)Lnet/minecraft/server/MinecraftServer;"))
     private void worldWait(CallbackInfo ci) {
-        synchronized (FastReset.saving) {
-            if (!FastReset.saving) {
-                FastReset.LOGGER.info("no save lock active");
-                return;
-            }
+        if (!FastReset.saving.get()) {
+            FastReset.LOGGER.info("no save lock active");
+            return;
         }
 
         this.method_29970(new SaveLevelScreen(new LiteralText("still saving the last world")));
