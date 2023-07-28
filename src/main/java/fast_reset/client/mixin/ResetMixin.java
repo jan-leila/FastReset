@@ -4,10 +4,7 @@ import fast_reset.client.FastReset;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.level.storage.LevelStorage;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
@@ -17,8 +14,6 @@ import java.util.Iterator;
 
 @Mixin(MinecraftServer.class)
 public class ResetMixin {
-    @Shadow @Final protected LevelStorage.Session session;
-
     // kill save on the shutdown
     @ModifyConstant(method = "shutdown", constant = @Constant(intValue = 0, ordinal = 0))
     private int disableWorldSaving(int savingDisabled) {
@@ -43,10 +38,6 @@ public class ResetMixin {
                         } catch (Exception ignored) {
                         }
                     }
-                }
-                try {
-                    this.session.deleteSessionLock();
-                } catch (Exception ignored) {
                 }
 
                 FastReset.saving.set(false);
