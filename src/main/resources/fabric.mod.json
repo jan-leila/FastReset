@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "fast_reset",
   "version": "${version}",
-  "name": "FastReset 1.16-1.16.1",
+  "name": "FastReset 1.16.1",
   "description": "",
   "authors": [
     "closet_witch"
