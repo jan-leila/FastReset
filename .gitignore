@@ -1,7 +1,6 @@
 # gradle
 
 .gradle/
-gradle/
 build/
 out/
 classes/
@@ -25,7 +24,17 @@ bin/
 .classpath
 .project
 
+# macos
+
+*.DS_Store
+
 # fabric
 
 run/
-logs/
+
+# java
+
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
